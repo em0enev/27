@@ -10,7 +10,7 @@ const EVENTS = {
  * All configurations are described in src/config.js
  */
 export default class Application extends EventEmitter {
-  constructor() {
+   constructor() {
     super();
 
     this.config = config;
@@ -18,8 +18,8 @@ export default class Application extends EventEmitter {
       count: 0,
       planets: []
     };
-
-    this.init();
+    
+     this.init();
   }
 
   static get events() {
@@ -36,22 +36,25 @@ export default class Application extends EventEmitter {
     // Initiate classes and wait for async operations here.
     const URL = 'https://swapi.dev/api/planets/';
 
-    const allDataFromApi = await fetch(URL)
-      .then((res) => res.json());
+    const response = await fetch(URL);
+    const data = await response.json();
 
-    this.data.count = allDataFromApi.count;
-    this.data.planets = allDataFromApi.results;
-    let nextPlanetPage = allDataFromApi.next;
+    this.data.count = data.count;
+    this.data.planets = data.results;
+    let nextPlanetPage = data.next;
 
     while (nextPlanetPage) {
-      const dataFromApi = await fetch(nextPlanetPage)
-        .then((res) => res.json());
-
-      nextPlanetPage = dataFromApi.next;
-      this.data.planets = [...this.data.planets, ...dataFromApi.results];
+      const response = await fetch(nextPlanetPage);
+      const data = await response.json();
+     
+      nextPlanetPage = data.next;
+      this.data.planets = [...this.data.planets, ...data.results];
     }
 
-    this.emit(Application.events.APP_READY);
+    console.log(this.data.planets, this.data.count)
+
+     return this.emit(Application.events.APP_READY);
   }
+
 }
 
