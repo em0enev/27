@@ -14,7 +14,10 @@ export default class Application extends EventEmitter {
     super();
 
     this.config = config;
-    this.data = {};
+    this.data = {
+      count: 0,
+      planets: []
+    };
 
     this.init();
   }
@@ -31,8 +34,6 @@ export default class Application extends EventEmitter {
    */
   async init() {
     // Initiate classes and wait for async operations here.
-    this.data.count = 0;
-    this.data.planets = [];
     const URL = 'https://swapi.dev/api/planets/';
 
     const allDataFromApi = await fetch(URL)
