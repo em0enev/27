@@ -53,8 +53,7 @@ export default class Application extends EventEmitter {
 
     console.log(this.data.planets, this.data.count)
 
-     return this.emit(Application.events.APP_READY);
+    await this.emit(Application.events.APP_READY);
   }
-
 }
 
