@@ -10,7 +10,7 @@ const EVENTS = {
  * All configurations are described in src/config.js
  */
 export default class Application extends EventEmitter {
-   constructor() {
+  constructor() {
     super();
 
     this.config = config;
@@ -18,8 +18,8 @@ export default class Application extends EventEmitter {
       count: 0,
       planets: []
     };
-    
-     this.init();
+
+    this.init();
   }
 
   static get events() {
@@ -34,24 +34,53 @@ export default class Application extends EventEmitter {
    */
   async init() {
     // Initiate classes and wait for async operations here.
-    const URL = 'https://swapi.dev/api/planets/';
+    // const URL = 'https://swapi.dev/api/planets/';
 
-    const response = await fetch(URL);
-    const data = await response.json();
-    
-    this.data.count = data.count;
-    this.data.planets = data.results;
-    let nextPlanetPage = data.next;
+    // const response = await fetch(URL);
+    // const data = await response.json();
 
-    while (nextPlanetPage) {
-      const response = await fetch(nextPlanetPage);
-      const data = await response.json();
-     
-      nextPlanetPage = data.next;
-      this.data.planets = [...this.data.planets, ...data.results];
-    }
+    // this.data.count = data.count;
+    // this.data.planets = data.results;
+    // let nextPlanetPage = data.next;
 
-     this.emit(Application.events.APP_READY);
+    // while (nextPlanetPage) {
+    //   const response = await fetch(nextPlanetPage);
+    //   const data = await response.json();
+
+    //   nextPlanetPage = data.next;
+    //   this.data.planets = [...this.data.planets, ...data.results];
+    // }
+    const {count, planets} =  await fetchAllPlanets();
+    this.data.count = count;
+    this.data.planets = planets;
+
+    console.log(this.data.planets, this.data.count)
+
+    this.emit(Application.events.APP_READY);
   }
+}
+
+async function fetchAllPlanets(){
+  let count = 0;
+  let planets = [];
+
+  const URL = 'https://swapi.dev/api/planets/';
+
+  const response = await fetch(URL);
+  const data = await response.json();
+
+  count = data.count;
+  planets = data.results;
+  let nextPlanetPage = data.next;
+
+  while (nextPlanetPage) {
+    const response = await fetch(nextPlanetPage);
+    const data = await response.json();
+
+    nextPlanetPage = data.next;
+    planets = [...planets, ...data.results];
+  }
+
+  return {count, planets}
 }
 
