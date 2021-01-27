@@ -20,8 +20,6 @@ export default class Application extends EventEmitter {
     };
 
      this.init()
-    
-    this.emit(Application.events.APP_READY);
   }
 
   static get events() {
@@ -40,7 +38,7 @@ export default class Application extends EventEmitter {
 
     const response = await fetch(URL);
     const data =  await response.json();
-    console.log(data)
+
     this.data.count = data.count;
     this.data.planets = data.results;
     let nextPlanetPage = data.next;
@@ -52,8 +50,6 @@ export default class Application extends EventEmitter {
       nextPlanetPage = data.next;
       this.data.planets = [...this.data.planets, ...data.results];
     }
-
-    
-     this.emit(Application.events.APP_READY);
+     this.emit('app_ready');
   }
 }
